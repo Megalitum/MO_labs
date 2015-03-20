@@ -40,7 +40,7 @@ class Alg_Quadratic(object):
          return 1/2(Ax, x) + (b, x)
          (A * np.matrix(x)).trans()*
         '''
-        return 1.0 / 2 * float(np.dot(np.transpose(np.dot(self.A, x)), x)) + float(np.dot(np.transpose(self.B), x))
+        return 1 / 2 * float(np.dot(np.transpose(np.dot(self.A, x)), x)) + float(np.dot(np.transpose(self.B), x))
 
     def dif(self, x):
         return np.dot(self.A, x) + self.B
@@ -50,7 +50,7 @@ class Alg_Quadratic(object):
 
     def alpha(self, x):
         '''
-        :param x: input porint
+        :param x: input print
         :return: -(f'(x), h)/(Ah,h)
         '''
         m = np.dot(np.transpose(self.dif(x)), self.Hk(x))
