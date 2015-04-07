@@ -5,13 +5,12 @@ import matplotlib.pyplot as plt
 
 
 class Algorithm(object):
-
     def __init__(self, init_point, function):
-        self.points = [np.array(init_point, ndmin=1)]
+        self.points = [np.array(init_point, ndmin=1, dtype=float)]
         self.dimension = len(self.points[0])
         self.function = function
         try:
-            function(self.points[0])
+            function.val(self.points[0])
         except Exception as ex:
             raise Exception('Failed calculating init point value', ex)
 
@@ -33,7 +32,7 @@ class Algorithm(object):
         file.writelines(self._generate_strings())
 
 
-    def plot_graph(self, color = 'r', alpha = 0.6):
+    def plot_graph(self, color='r', alpha=0.6):
         """
         works for 2-dimensional only
         """
@@ -43,5 +42,5 @@ class Algorithm(object):
         ax = fig.add_subplot(111, projection='3d')
         x, y = np.transpose(self.points)
         z = list(map(self.function, self.points))
-        ax.scatter(x, y, z, c = color, alpha = alpha)
+        ax.scatter(x, y, z, c=color, alpha=alpha)
         plt.show()

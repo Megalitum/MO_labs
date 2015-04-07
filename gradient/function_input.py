@@ -3,8 +3,8 @@ __author__ = 'vlad'
 import numpy as np
 import re
 
-class FunctionInput():
 
+class FunctionInput():
     def _input_from_file(self, path):
         lines = []
         try:
@@ -35,7 +35,7 @@ class FunctionInput():
         except:
             return 0
 
-    def input_data(self, path = 'input.txt'):
+    def input_data(self, path='input.txt'):
         lines = self._input_from_file(path)
         param = re.compile(r'(\S+?) \s* = \s* (.+?) \s*$', re.VERBOSE)
         dt = dict()
@@ -45,7 +45,7 @@ class FunctionInput():
                 dt[res.group(1)] = res.group(2)
         try:
             function = dt['Function']
-            function = re.sub(r'([-+])([a-zA-Z])',r'\g<1>1*\2', function)
+            function = re.sub(r'([-+])([a-zA-Z])', r'\g<1>1*\2', function)
             arguments = dt['Vars'].split()
             x_string = dt['Point'].split()
             x0 = self._string_to_float(x_string)
@@ -75,13 +75,13 @@ class FunctionInput():
             (?:\*[a-zA-Z]\*\*2|(?:\*[a-zA-Z]){0,2})$
         ''', re.VERBOSE)
         for summand in parts:
-            re.sub(r'\s','', summand)
+            re.sub(r'\s', '', summand)
             if not quad_patt.match(summand):
                 return False
         return True
 
 
-    def read_quadratic(self):
+    def read_quadratic(self):  # what's the point??
         return
 
     def create_matrix_A(self, function, arguments):

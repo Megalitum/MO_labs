@@ -3,8 +3,43 @@
 
 __author__ = 'fedoramy'
 
-
 import numpy as np
+from gradient.function_input import FunctionInput
+import re
+
+
+class Quadratic_Func(object):
+    '''
+    f(x)=1/2(Ax,x) + (b,x) + c
+    '''
+
+    def __init__(self, string, arguments):
+        if len(arguments) == 0:
+            raise Exception('No arguments passed')
+        f = FunctionInput()
+        self.A = f.create_matrix_A(string, arguments)
+        self.b = f.create_b(string, arguments)
+        const = re.search(r'(?:[+-]|^)\d+(?:\.\d+)?(?:$|[+-])', string)
+        if const is not None:
+            self.c = float(const.group())
+        else:
+            const = 0
+
+    def _quad_part(self, x):
+        return np.dot(np.dot(self.A, x), x)  # returns (Ax,x)
+
+    def _linear_part(self, x):
+        return np.dot(self.b.T, x)  # returns (b,x)
+
+    def val(self, x):
+        return (self._quad_part(x) + self._linear_part(x) + self.c)[0, 0]
+
+    def diff(self, x):
+        return 2 * np.dot(self.A, x).T + self.b
+
+    def gesse(self, x=[]):
+        return 2 * self.A
+
 
 class Alg_Quadratic(object):
     MAX_ITER = 100000

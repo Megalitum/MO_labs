@@ -11,3 +11,4 @@ def test_1():
     expected = matrix([[1, 1],[1, -1]])
     print(result.all())
     assert_true((result == expected).all())
+
