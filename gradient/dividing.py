@@ -16,7 +16,7 @@ class DividingMethod(Algorithm):
 
     def iteration(self):
         curvalue = self.function.val(self.points[-1])
-        h = self.function.diff(self.points[-1]).T
+        h = np.array(self.function.diff(self.points[-1]).T).reshape(-1,)
         alpha = beta = 0.5
         next = - alpha * h + self.points[-1]
         while self.function.val(next) > curvalue: #infinite loop danger

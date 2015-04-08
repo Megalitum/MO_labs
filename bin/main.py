@@ -4,25 +4,38 @@ __author__ = 'vlad'
 from gradient.quadratic import Alg_Quadratic
 import numpy as np # must be removed
 from gradient.function_input import FunctionInput
+from gradient.function import Function as func
+from gradient.dividing import DividingMethod
 
-def main(filepath = 'input.txt'):
-    ob = FunctionInput()
-    list1 = ob.input_data(filepath)
-    if ob.check_quadratic(list1[0]):
-        matrix = ob.create_matrix_A(list1[0], list1[1])
-        b = ob.create_b(list1[0], list1[1])
-        X = np.matrix(list1[2])
-        x = np.transpose(X)
-        eps1 = list1[3]
-        eps2 = list1[4]
-        eps3 = list1[5]
-        iters = list1[6]
+def main(filepath='input.txt'):
+    choice = input('Choose method (1 - quadratic, 2 - dividing)> ')
+    if choice == '1':
+        ob = FunctionInput()
+        list1 = ob.input_data(filepath)
+        if ob.check_quadratic(list1[0]):
+            matrix = ob.create_matrix_A(list1[0], list1[1])
+            b = ob.create_b(list1[0], list1[1])
+            X = np.matrix(list1[2])
+            x = np.transpose(X)
+            eps1 = list1[3]
+            eps2 = list1[4]
+            eps3 = list1[5]
+            iters = list1[6]
 
-        print(matrix)
-        print(b)
-        print(x)
+            print(matrix)
+            print(b)
+            print(x)
 
-        obj = Alg_Quadratic(2 * matrix, b, x, eps1, eps2, eps3, iters)
-        obj.iteration()
+            obj = Alg_Quadratic(2 * matrix, b, x, eps1, eps2, eps3, iters)
+            obj.iteration()
+        else:
+            print('Input func was not parsed')
+
+    elif choice == '2':
+        f = func('x**2+4*y**2+0.001*x*y-y',['x','y'])
+        method = DividingMethod([200.12, 200],f,0.00001)
+        method.launch()
+        method.print_to_file('output.txt')
+        method.plot_graph()
 
 main()

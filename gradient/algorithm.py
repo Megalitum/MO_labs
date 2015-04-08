@@ -2,6 +2,7 @@ __author__ = 'vlad'
 
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 
 class Algorithm(object):
@@ -21,15 +22,19 @@ class Algorithm(object):
     def launch(self):
         pass
 
+    def _get_mask(self):
+        return '#{number:<7} x: {point}\nf: {value}\n'
+
     def _generate_strings(self):
-        mask = '#{number:<7} x: {point}\nf: {value}'
+        mask = self._get_mask()
         for number in range(len(self.points)):
             point = self.points[number]
-            yield mask.format(number=number, point=str(point), value=self.function(point))
+            yield mask.format(number=number, point=str(point), value=self.function.val(point))
 
     def print_to_file(self, filename):
         file = open(filename, 'w')
         file.writelines(self._generate_strings())
+        file.close()
 
 
     def plot_graph(self, color='r', alpha=0.6):
@@ -41,6 +46,6 @@ class Algorithm(object):
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         x, y = np.transpose(self.points)
-        z = list(map(self.function, self.points))
+        z = list(map(self.function.val, self.points))
         ax.scatter(x, y, z, c=color, alpha=alpha)
         plt.show()
