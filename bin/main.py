@@ -33,7 +33,7 @@ def main(filepath='input.txt'):
 
     elif choice == '2':
         f = func('x**2+4*y**2+0.001*x*y-y',['x','y'])
-        method = DividingMethod([200.12, 200],f,0.00001)
+        method = DividingMethod([10000000000, 10000000000],f,0.00001)
         method.launch()
         method.print_to_file('output.txt')
         method.plot_graph()

@@ -119,7 +119,7 @@ class FunctionInput():
         n = len(arguments)
         b = []
         for i in range(n):
-            p = re.compile('([+-]?\d+|[+-]?\d+\.\d+)\*?' + arguments[i] + '[^*]')
+            p = re.compile(r'([+-]?\d+(?:\.\d+)?)\*' + arguments[i] + r'(?:$|[^*])')
             p_l = p.findall(function)
             if self.is_empty_list(p_l):
                 b.append([0.0])
