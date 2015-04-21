@@ -3,12 +3,14 @@ __author__ = 'vlad'
 
 from gradient.quadratic import Alg_Quadratic
 import numpy as np # must be removed
+import pylab as plb
 from gradient.function_input import FunctionInput
 from gradient.function import Function as func
 from gradient.dividing import DividingMethod
+from gradient.newton import NewtonMethod
 
 def main(filepath='input.txt'):
-    choice = input('Choose method (1 - quadratic, 2 - dividing)> ')
+    choice = input('Choose method (1 - quadratic, 2 - dividing, 3 - newton)> ')
     if choice == '1':
         ob = FunctionInput()
         list1 = ob.input_data(filepath)
@@ -21,7 +23,6 @@ def main(filepath='input.txt'):
             eps2 = list1[4]
             eps3 = list1[5]
             iters = list1[6]
-
             print(matrix)
             print(b)
             print(x)
@@ -32,10 +33,21 @@ def main(filepath='input.txt'):
             print('Input func was not parsed')
 
     elif choice == '2':
-        f = func('x**2+4*y**2+0.001*x*y-y',['x','y'])
-        method = DividingMethod([10000000000, 10000000000],f,0.00001)
+        #f = func('(x-4)**2+400*(y+4)**2+2*(x-4)*(y+4)',['x','y'])
+        f = func('x**2 +8*y**2 +0.001*x*y-x-y', ['x','y'])
+        method = DividingMethod([10000000, 10],f,0.00000001)
         method.launch()
         method.print_to_file('output.txt')
-        method.plot_graph()
+        #method.graph_3d()
+        method.graph_path()
+        plb.show()
+    elif choice == '3':
+        f = func('x**2 +8*y**2 +0.001*x*y-x-y', ['x','y'])
+        method = NewtonMethod([10000000, 10],f)
+        method.launch()
+        method.print_to_file('output.txt')
+        method.graph_path()
+        plb.show()
+
 
 main()
