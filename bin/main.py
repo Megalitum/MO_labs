@@ -8,9 +8,10 @@ from gradient.function_input import FunctionInput
 from gradient.function import Function as func
 from gradient.dividing import DividingMethod
 from gradient.newton import NewtonMethod
+from gradient.projection import ProjectionMethod
 
 def main(filepath='input.txt'):
-    choice = input('Choose method (1 - quadratic, 2 - dividing, 3 - newton)> ')
+    choice = input('Choose method (1 - quadratic, 2 - dividing, 3 - newton, 4 - projection > ')
     if choice == '1':
         ob = FunctionInput()
         list1 = ob.input_data(filepath)
@@ -34,6 +35,8 @@ def main(filepath='input.txt'):
 
     elif choice == '2':
         #f = func('(x-4)**2+400*(y+4)**2+2*(x-4)*(y+4)',['x','y'])
+        #f = func('x**2 +3*y**2 +2*z**2', ['x','y', 'z'])
+        #method = DividingMethod([10, 9, 8],f,0.000001)
         f = func('x**2 +8*y**2 +0.001*x*y-x-y', ['x','y'])
         method = DividingMethod([10000000, 10],f,0.00000001)
         method.launch()
@@ -48,6 +51,12 @@ def main(filepath='input.txt'):
         method.print_to_file('output.txt')
         method.graph_path()
         plb.show()
+    elif choice == '4':
+        f = func('x**2 +3*y**2 +2*z**2', ['x','y', 'z'])
+        H = func('2*x+y+3*z -1', ['x', 'y', 'z'])
+        method = ProjectionMethod([3,0,3], f, H)
+        method.launch()
+        method.print_to_file('output3.txt')
 
 
 main()
