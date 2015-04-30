@@ -23,7 +23,7 @@ class Quadratic_Func(object):
         if const is not None:
             self.c = float(const.group())
         else:
-            const = 0
+            self.c = 0
 
     def _quad_part(self, x):
         return np.dot(np.dot(self.A, x), x)  # returns (Ax,x)

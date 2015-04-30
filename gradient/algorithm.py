@@ -65,7 +65,7 @@ class Algorithm(object):
         xx, yy = np.meshgrid(x_all, y_all)
         f = self.function.val((xx,yy))
         plb.contour(x_all, y_all, f, 50, alpha = 0.5)
-        plb.plot(x,y)
+        plb.plot(x,y,'r')
         plb.xlim((xlast - zoom, xlast + zoom))
         plb.ylim((ylast - zoom, ylast + zoom))
         plb.scatter(x[:-1],y[:-1],c='r', marker='o', alpha=0.5)
