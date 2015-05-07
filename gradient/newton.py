@@ -6,7 +6,7 @@ from math import sqrt
 
 
 class NewtonMethod(Algorithm):
-    def __init__(self, init_point, function, eps_x=1e-7, eps_f=1e-7, eps_f1=1e07, max_iter=10000):
+    def __init__(self, init_point, function, eps_x=1e-7, eps_f=1e-7, eps_f1=1e-7, max_iter=10000):
         super().__init__(init_point, function)
         self.eps_x = eps_x
         self.eps_f = eps_f

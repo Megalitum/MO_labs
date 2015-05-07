@@ -2,6 +2,10 @@ __author__ = 'vlad'
 
 from sympy import S
 import numpy as np
+from math import *
+
+def Abs(x):
+    return abs(x)
 
 
 class Function(object):
@@ -14,14 +18,14 @@ class Function(object):
 
     def val(self, x):
         arguments = {key: value for key, value in zip(self._args, x)}
-        return eval(str(self._func), arguments)
+        return eval(str(self._func), globals(), arguments)
 
     def diff(self, x):
         arguments = {key: value for key, value in zip(self._args, x)}
-        values = [eval(diff,arguments) for diff in self._diffs]
+        values = [eval(diff,globals(),arguments) for diff in self._diffs]
         return np.matrix(values).T
 
     def gesse(self, x):
         arguments = {key: value for key, value in zip(self._args, x)}
-        values = [[eval(diff2,arguments) for diff2 in row] for row in self._gesse]
+        values = [[eval(diff2,globals(),arguments) for diff2 in row] for row in self._gesse]
         return np.matrix(values)

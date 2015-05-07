@@ -1,4 +1,4 @@
-__author__ = 'vlad'
+__author__ = 'y ss i'
 
 from gradient.algorithm import Algorithm
 import numpy as np
@@ -8,14 +8,14 @@ from gradient.quadratic import Quadratic_Func
 
 
 class Conjugate_Gradient_Quadratic(Algorithm):
-    def __init__(self, init_point, function, eps_x=1e-7, eps_f=1e-7, eps_f1=1e07, max_iter=10000):
+    def __init__(self, init_point, function, eps_x=1e-7, eps_f=1e-7, eps_f1=1e-7, max_iter=10000, eps_h = 1e-13):
         super().__init__(init_point, function)
         self.eps_x = eps_x
         self.eps_f = eps_f
         self.eps_f1 = eps_f1
+        self.eps_h = eps_h
         self.max_iter = len(init_point) + 1
         self.h = [np.array(-function.diff(self.points[0]).getA1(), ndmin=1, dtype=np.float_)]
-        print(self.h)
 
     def _norm(self, x1, x2):
         return sqrt(sum(map(lambda x: x**2, np.array(x1, ndmin=1) - np.array(x2, ndmin=1))))
@@ -60,14 +60,15 @@ class Conjugate_Gradient_Quadratic(Algorithm):
                 print('Iteration limit reached')
                 break
             next = self.iteration()
-            self.points.append(next)
-            if (self.h[-1] == np.array([0., 0.])).all():
+            if (np.linalg.norm(self.h[-1]) < self.eps_h):
                 print('Solution found: ', self.points[-1])
+                print('Iteration count: ', len(self.points) - 1)
                 break
+            self.points.append(next)
 
 
 class Conjugate_Gradient(Algorithm):
-    def __init__(self, init_point, function, eps_x=1e-7, eps_f=1e-7, eps_f1=1e07, max_iter=10000):
+    def __init__(self, init_point, function, eps_x=1e-14, eps_f=1e+24, eps_f1=1e+100000000, max_iter=10000):
         super().__init__(init_point, function)
         self.eps_x = eps_x
         self.eps_f = eps_f
@@ -75,7 +76,6 @@ class Conjugate_Gradient(Algorithm):
         self.max_iter = max_iter
         self.h = [np.array(-function.diff(self.points[0]).getA1(), ndmin=1, dtype=np.float_)]
         self.counter = 0
-        print(self.h)
 
     def _norm(self, x1, x2):
         return sqrt(sum(map(lambda x: x**2, np.array(x1, ndmin=1) - np.array(x2, ndmin=1))))

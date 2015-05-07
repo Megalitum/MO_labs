@@ -10,6 +10,7 @@ from gradient.dividing import DividingMethod
 from gradient.newton import NewtonMethod
 from gradient.projection import ProjectionMethod
 from gradient.conjugate import Conjugate_Gradient_Quadratic, Conjugate_Gradient
+from math import *
 
 def main(filepath='input.txt'):
     #choice = input('Choose method (1 - quadratic, 2 - dividing, 3 - newton, 4 - projection > ')
@@ -64,11 +65,13 @@ def main(filepath='input.txt'):
         #f = Quadratic_Func('1*x**2 +1*y**2', ['x','y'])
         method = Conjugate_Gradient_Quadratic([10, 10], f)
         method.launch()
+        method.print_to_file('output_5q.txt')
     elif choice == '5':
-        f = Quadratic_Func('1*x**2 +8*y**2 +0.001*x*y-1*x-1*y', ['x','y'])
+        f = func('x**2+y**2*sin(y)**2', ['x','y'])
         #f = Quadratic_Func('1*x**2 +1*y**2', ['x','y'])
         method = Conjugate_Gradient([10, 10], f)
         method.launch()
+        method.print_to_file('output_5.txt')
 
 
 main()
