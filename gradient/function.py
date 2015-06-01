@@ -15,10 +15,14 @@ class Function(object):
         temp_diff = [self._func.diff(coord) for coord in self._args]
         self._gesse = [[str(diff.diff(coord)) for coord in self._args] for diff in temp_diff]
         self._diffs = list(map(str,temp_diff))
+        self._fstring = str(self._func)
+
+    def get_args(self):
+        return self._args.copy()
 
     def val(self, x):
         arguments = {key: value for key, value in zip(self._args, x)}
-        return eval(str(self._func), globals(), arguments)
+        return eval(self._fstring, globals(), arguments)
 
     def diff(self, x):
         arguments = {key: value for key, value in zip(self._args, x)}

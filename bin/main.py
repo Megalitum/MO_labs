@@ -9,12 +9,13 @@ from gradient.function import Function as func
 from gradient.dividing import DividingMethod
 from gradient.newton import NewtonMethod
 from gradient.projection import ProjectionMethod
-from gradient.conjugate import Conjugate_Gradient_Quadratic, Conjugate_Gradient
+from gradient.conjugate import Conjugate_Gradient_Quadratic, Conjugate_Gradient,\
+    Conjugate_Gradient_Quadratic_Positive
 from math import *
 
 def main(filepath='input.txt'):
     #choice = input('Choose method (1 - quadratic, 2 - dividing, 3 - newton, 4 - projection > ')
-    choice = '5'
+    choice = 'l'
     if choice == '1':
         ob = FunctionInput()
         list1 = ob.input_data(filepath)
@@ -61,17 +62,22 @@ def main(filepath='input.txt'):
         method.launch()
         method.print_to_file('output3.txt')
     elif choice == '5q':
-        f = Quadratic_Func('1*x**2 +8*y**2 +0.001*x*y-1*x-1*y', ['x','y'])
+        f = Quadratic_Func('1*x**2 +4*y**2 +0.001*x*y -1*y', ['x','y'])
         #f = Quadratic_Func('1*x**2 +1*y**2', ['x','y'])
-        method = Conjugate_Gradient_Quadratic([10, 10], f)
+        method = Conjugate_Gradient_Quadratic([100, -100], f)
         method.launch()
         method.print_to_file('output_5q.txt')
     elif choice == '5':
-        f = func('x**2+y**2*sin(y)**2', ['x','y'])
+        f = func('cos(x)**2', ['x'])
         #f = Quadratic_Func('1*x**2 +1*y**2', ['x','y'])
-        method = Conjugate_Gradient([10, 10], f)
+        method = Conjugate_Gradient([10], f)
         method.launch()
         method.print_to_file('output_5.txt')
+        #method.graph_path()
+    elif choice == 'l':
+        f = Quadratic_Func('1*x**2+2*x*y+1*y**2+1*z**2-3*z*t+4*t**2-1*x-20*y+40*z-80*t',['x','y','z','t'])
+        method = Conjugate_Gradient_Quadratic_Positive([10,1,15,5],f)
+        method.launch()
 
 
 main()

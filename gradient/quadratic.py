@@ -13,20 +13,29 @@ class Quadratic_Func(object):
     f(x)=1/2(Ax,x) + (b,x) + c
     '''
 
-    def __init__(self, string, arguments):
-        if len(arguments) == 0:
-            raise Exception('No arguments passed')
-        f = FunctionInput()
-        self.A = f.create_matrix_A(string, arguments)
-        self.b = f.create_b(string, arguments)
-        const = re.search(r'(?:[+-]|^)\d+(?:\.\d+)?(?:$|[+-])', string)
-        if const is not None:
-            self.c = float(const.group())
+    def __init__(self, *args, **kwargs):
+        if len(kwargs) == 0:
+            if len(args[1]) == 0:
+                raise Exception('No arguments passed')
+            f = FunctionInput()
+            self._args = args[1]
+            self.A = f.create_matrix_A(args[0], args[1]) * 2
+            self.b = f.create_b(args[0], args[1])
+            const = re.search(r'(?:[+-]|^)\d+(?:\.\d+)?(?:$|[+-])', args[0])
+            if const is not None:
+                self.c = float(const.group())
+            else:
+                self.c = 0
         else:
-            self.c = 0
+            self.A = np.matrix(kwargs['matrA'])
+            self.b = np.matrix(kwargs['vecB']).T
+            self.c = kwargs['constC']
+
+    def get_args(self):
+        return self._args.copy()
 
     def _quad_part(self, x):
-        return np.dot(np.dot(self.A, x), x)  # returns (Ax,x)
+        return np.dot(np.dot(self.A, x), x)  / 2. # returns 0.5(Ax,x)
 
     def _linear_part(self, x):
         return np.dot(self.b.T, x)  # returns (b,x)
@@ -35,10 +44,10 @@ class Quadratic_Func(object):
         return (self._quad_part(x) + self._linear_part(x) + self.c)[0, 0]
 
     def diff(self, x):
-        return 2 * np.dot(self.A, x).T + self.b
+        return np.dot(self.A, x).T + self.b
 
     def gesse(self, x=[]):
-        return 2 * self.A
+        return self.A
 
 
 class Alg_Quadratic(object):
