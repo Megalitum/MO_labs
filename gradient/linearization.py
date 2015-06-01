@@ -29,10 +29,12 @@ class Linearization(Algorithm):
     def iteration(self):
         next_item = 0
         # store parameters N, delta
-        # check Pshenichny on page
+        # check Pshenichny on page 230 (232 in djvu)
         # need to add function building and solve it with
         # phi(u) = 0.5 <Au,u> + <b,u> + c
         # A = [<f_i'(x), f_j'(x)>] i,j in I_delta
+        # b = [<f_i'(x),f_0'(x)> - f_i(x)] i in I_delta
+        # c = 0.5 ||f_0'(x)||^2
         return next_item
 
 
