@@ -11,6 +11,7 @@ from gradient.newton import NewtonMethod
 from gradient.projection import ProjectionMethod
 from gradient.conjugate import Conjugate_Gradient_Quadratic, Conjugate_Gradient,\
     Conjugate_Gradient_Quadratic_Positive
+from gradient.linearization import Linearization
 from math import *
 
 def main(filepath='input.txt'):
@@ -75,9 +76,13 @@ def main(filepath='input.txt'):
         method.print_to_file('output_5.txt')
         #method.graph_path()
     elif choice == 'l':
-        f = Quadratic_Func('1*x**2+2*x*y+1*y**2+1*z**2-3*z*t+4*t**2-1*x-20*y+40*z-80*t',['x','y','z','t'])
-        method = Conjugate_Gradient_Quadratic_Positive([10,1,15,5],f)
+        f0 = func('0.5 * (x + y)**2 + 50* (x-y)**2 + z**2', ['x','y','z'])
+        f1 = func('(x - 1)**2 + (y - 1)**2 + (z - 1)**2 - 1.5', ['x','y','z'])
+        f2 = func('sin(x + y) - z', ['x','y','z'])
+        f3 = func('-sin(x + y) + z', ['x','y','z'])
+        method = Linearization([-1, 4, 5], f0, f1, f2, f3)
         method.launch()
+        print('\n result: ',method.points[-1])
 
 
 main()

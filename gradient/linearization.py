@@ -2,19 +2,20 @@ __author__ = 'vlad'
 
 from gradient.algorithm import Algorithm
 import numpy as np
+from gradient.quadratic import Quadratic_Func
+from gradient.conjugate import Conjugate_Gradient_Quadratic_Positive
 
 
 class Linearization(Algorithm):
-    def __init__(self, init_point, function, eps_x=1e-7, eps_f=1e-7, eps_f1=1e-7, max_iter=10000, *args):
+    def __init__(self, init_point, function, *args, **kwargs):
         super().__init__(init_point, function)
-        self.eps_x = eps_x
-        self.eps_f = eps_f
-        self.eps_f1 = eps_f1
-        self.max_iter = max_iter
+        self.eps_x = kwargs.get('eps_x',1e-7)
+        self.max_iter =kwargs.get('max_iter',10000)
+        self.delta = kwargs.get('delta',1)
+        self.N = kwargs.get('N',10)
+        self.eps = kwargs.get('eps', 0.1)
         self.bounds = list(args) # assume functions passed as f_i(x), where border is interpreted as f_i(x)<=0
-        self.h = [np.array(-function.diff(self.points[0]).getA1(), ndmin=1, dtype=np.float_)]
         self.counter = 0
-
 
     def _get_mask(self):
         return '#{number:<7} x: {point}\nf: {value}\ngrad: {grad}\n\n'
@@ -26,15 +27,66 @@ class Linearization(Algorithm):
             yield mask.format(number=number, point=str(point), value=self.function.val(point),
                               grad=self.function.diff(point).ravel())
 
+    def _F(self, point):
+        _max = 0
+        for func in self.bounds:
+            _max = max(func.val(point), _max)
+        return _max
+
+    def _delta_set(self, point):
+        F = self._F(point)
+        values = np.array([func.val(point) for func in self.bounds])
+        return values >= F - self.delta
+
+    def _help_func(self, point):
+        return self.function.val(point) + self.N*self._F(point)
+
     def iteration(self):
-        next_item = 0
-        # store parameters N, delta
-        # check Pshenichny on page 230 (232 in djvu)
-        # need to add function building and solve it with
-        # phi(u) = 0.5 <Au,u> + <b,u> + c
-        # A = [<f_i'(x), f_j'(x)>] i,j in I_delta
-        # b = [<f_i'(x),f_0'(x)> - f_i(x)] i in I_delta
-        # c = 0.5 ||f_0'(x)||^2
+        cur_item = self.points[-1]
+        d_set = self._delta_set(cur_item)
+        size = d_set.sum()
+        A = np.matrix(np.zeros((size, size)))
+        b = np.matrix(np.zeros((size,1)))
+        vals = []
+        diffs = [self.function.diff(cur_item)]
+        for i in range(len(self.bounds)):
+            if d_set[i]:
+                diffs.append(self.bounds[i].diff(cur_item))
+                vals.append(self.bounds[i].val(cur_item))
+        for i in range(size):
+            for j in range(i, size):
+                A[i, j] = np.tensordot(diffs[i + 1], diffs[j + 1])
+        for i in range(size):
+            for j in range(i):
+                A[i, j] = A[j, i]
+        for i in range(size):
+            b[0, i] = np.tensordot(diffs[i + 1], diffs[0]) - vals[i]
+        # c = 0.5 * np.tensordot(diffs[0], diffs[0])
+        temp_func = Quadratic_Func(matrA=A,vecB=b,constC=0)
+        method = Conjugate_Gradient_Quadratic_Positive(np.ones(size),temp_func, verbose=False)
+        result = method.launch()
+        if not result['success']:
+            raise ValueError('Bad delta')
+        u = result['result']
+        if self.N <= np.sum(u):
+            self.N = np.sum(u)
+        p = - diffs[0]
+        for i in range(size):
+            p -= u[i]*diffs[i + 1]
+        alpha = 1
+        template = self._help_func(cur_item)
+        pnorm = np.linalg.norm(p)
+        if pnorm < self.eps_x:
+            return cur_item
+        index = 0
+        while (self._help_func(cur_item + alpha * p.getA1())) > (template - alpha * self.eps * pnorm):
+            alpha /= 2
+            index += 1
+            if index > 1000:
+                raise Exception('Not decreasing')
+        next_item = cur_item + alpha * p.getA1()
+        print('alpha = ', alpha, ' p = ', p.T)
+        print('point = ', next_item)
         return next_item
 
 
@@ -43,9 +95,14 @@ class Linearization(Algorithm):
             if len(self.points) > self.max_iter:
                 print('Iteration limit reached')
                 break
-            next = self.iteration()
-            if self._norm(self.points[-1], next) < self.eps_x and\
-                    np.linalg.norm(self.function.val(self.points[-1]), self.function.val(next)) < self.eps_f and\
-                    np.linalg.norm(self.function.diff(self.points[-1]), self.function.diff(next)) < self.eps_f1:
+            try:
+                next_item = self.iteration()
+            except ValueError:
+                self.delta /= 2
+                continue
+            except Exception:
+                print('method failed')
+                break
+            if np.linalg.norm(self.points[-1] - next_item) < self.eps_x:
                 break # possibly bad stop criterion
-            self.points.append(next)
+            self.points.append(next_item)

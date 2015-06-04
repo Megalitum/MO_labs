@@ -138,11 +138,11 @@ class Conjugate_Gradient_Quadratic_Positive(Algorithm):
                 print('Iteration limit reached')
                 break
             next_item = self.iteration(f_new)
+            self.subpoints.append(next_item)
             if (np.linalg.norm(self.h[-1]) < self.eps_h):
                 break
             if (np.linalg.norm(self.subpoints[-1] - next_item) < self.eps_x):
                 break
-            self.subpoints.append(next_item)
         return self.subpoints[-1]
 
     def launch(self):
@@ -174,6 +174,8 @@ class Conjugate_Gradient_Quadratic_Positive(Algorithm):
             if self.verbose:
                 print("Next point: ", next_point, 'Diff: ', diff_array)
             self.points.append(next_point)
+            if len(self.points) > self.max_iter:
+                break
         if self.verbose:
             print('Possible solution: ', self.points[-1])
         return {'result':self.points[-1], 'iterations':len(self.points),
