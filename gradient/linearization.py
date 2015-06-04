@@ -79,7 +79,7 @@ class Linearization(Algorithm):
         if pnorm < self.eps_x:
             return cur_item
         index = 0
-        while (self._help_func(cur_item + alpha * p.getA1())) > (template - alpha * self.eps * pnorm):
+        while (self._help_func(cur_item + alpha * p.getA1())) > (template - alpha * self.eps * pnorm**2):
             alpha /= 2
             index += 1
             if index > 1000:
@@ -102,6 +102,7 @@ class Linearization(Algorithm):
                 continue
             except Exception:
                 print('method failed')
+                print('value:', self.function.val(self.points[-1]))
                 break
             if np.linalg.norm(self.points[-1] - next_item) < self.eps_x:
                 break # possibly bad stop criterion
