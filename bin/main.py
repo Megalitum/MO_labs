@@ -76,13 +76,14 @@ def main(filepath='input.txt'):
         method.print_to_file('output_5.txt')
         #method.graph_path()
     elif choice == 'l':
-        f0 = func('0.5 * (x + y)**2 + (x-y)**2 + z**2', ['x','y','z'])
+        f0 = func('0.5 * (x + y)**2 +2* (x-y)**2 + z**2', ['x','y','z'])
         f1 = func('(x - 1)**2 + (y - 1)**2 + (z - 1)**2 - 1.5', ['x','y','z'])
         f2 = func('sin(x + y) - z', ['x','y','z'])
         f3 = func('-sin(x + y) + z', ['x','y','z'])
-        method = Linearization([-1, 4, 5], f0, f1, f2, f3)
+        method = Linearization([-1, 4, 5], f1, f0, f2, f3)
         method.launch()
         print('\n result: ',method.points[-1])
+        print(' #iterations: ', len(method.points))
 
 
 main()

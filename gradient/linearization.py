@@ -86,7 +86,7 @@ class Linearization(Algorithm):
                 raise Exception('Not decreasing')
         next_item = cur_item + alpha * p.getA1()
         print('alpha = ', alpha, ' p = ', p.T)
-        print('point = ', next_item)
+        print('point = ', next_item, ' value = [', self.function.val(next_item),']')
         return next_item
 
 
@@ -102,9 +102,7 @@ class Linearization(Algorithm):
                 continue
             except Exception as e:
                 print('method failed', e.args)
-                print('value:', self.function.val(self.points[-1]))
                 break
             if np.linalg.norm(self.points[-1] - next_item) < self.eps_x:
-                print('value:', self.function.val(self.points[-1]))
                 break
             self.points.append(next_item)
