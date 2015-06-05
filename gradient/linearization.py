@@ -12,7 +12,7 @@ class Linearization(Algorithm):
         self.eps_x = kwargs.get('eps_x',1e-7)
         self.max_iter =kwargs.get('max_iter',10000)
         self.delta = kwargs.get('delta',1)
-        self.N = kwargs.get('N',10)
+        self.N = kwargs.get('N',1)
         self.eps = kwargs.get('eps', 0.1)
         self.bounds = list(args) # assume functions passed as f_i(x), where border is interpreted as f_i(x)<=0
         self.counter = 0
@@ -46,7 +46,7 @@ class Linearization(Algorithm):
         d_set = self._delta_set(cur_item)
         size = d_set.sum()
         A = np.matrix(np.zeros((size, size)))
-        b = np.matrix(np.zeros((size,1)))
+        b = np.matrix(np.zeros((1,size)))
         vals = []
         diffs = [self.function.diff(cur_item)]
         for i in range(len(self.bounds)):
@@ -69,7 +69,7 @@ class Linearization(Algorithm):
             raise ValueError('Bad delta')
         u = result['result']
         if self.N <= np.sum(u):
-            self.N = np.sum(u)
+            self.N = 2*np.sum(u)
         p = - diffs[0]
         for i in range(size):
             p -= u[i]*diffs[i + 1]
@@ -100,10 +100,11 @@ class Linearization(Algorithm):
             except ValueError:
                 self.delta /= 2
                 continue
-            except Exception:
-                print('method failed')
+            except Exception as e:
+                print('method failed', e.args)
                 print('value:', self.function.val(self.points[-1]))
                 break
             if np.linalg.norm(self.points[-1] - next_item) < self.eps_x:
-                break # possibly bad stop criterion
+                print('value:', self.function.val(self.points[-1]))
+                break
             self.points.append(next_item)
