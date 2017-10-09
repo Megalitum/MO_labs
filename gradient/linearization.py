@@ -63,7 +63,7 @@ class Linearization(Algorithm):
             b[0, i] = np.tensordot(diffs[i + 1], diffs[0]) - vals[i]
         # c = 0.5 * np.tensordot(diffs[0], diffs[0])
         temp_func = Quadratic_Func(matrA=A,vecB=b,constC=0)
-        method = Conjugate_Gradient_Quadratic_Positive(np.ones(size),temp_func, verbose=False)
+        method = Conjugate_Gradient_Quadratic_Positive(np.ones(size),temp_func, verbose=False, max_iter=1000)
         result = method.launch()
         if not result['success']:
             raise ValueError('Bad delta')

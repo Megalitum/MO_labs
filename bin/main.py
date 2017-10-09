@@ -76,11 +76,22 @@ def main(filepath='input.txt'):
         method.print_to_file('output_5.txt')
         #method.graph_path()
     elif choice == 'l':
-        f0 = func('0.5 * (x + y)**2 +2* (x-y)**2 + z**2', ['x','y','z'])
-        f1 = func('(x - 1)**2 + (y - 1)**2 + (z - 1)**2 - 1.5', ['x','y','z'])
-        f2 = func('sin(x + y) - z', ['x','y','z'])
-        f3 = func('-sin(x + y) + z', ['x','y','z'])
-        method = Linearization([-1, 4, 5], f0, f1, f2, f3)
+        # f0 = func('0.5 * (x + y)**2 + 10*(x-y)**2 + z**2', ['x','y','z'])
+        # f1 = func('(x - 1)**2 + (y - 1)**2 + (z - 1)**2 - 1.5', ['x','y','z'])
+        # f2 = func('sin(x + y) - z', ['x','y','z'])
+        # f3 = func('-sin(x + y) + z', ['x','y','z'])
+        # method = Linearization([-1,4,5], f0, f1, f2, f3)
+        f0 = func('(x - 1)**2 + (x - y)**2 + (y - z)**3 + (z - t)**4 + (t - w)**4', ['x','y','z','t','w'])
+        f1 = func('x + y**2 + z**3 - 2 - 3*sqrt(2)',['x','y','z','t','w'])
+        f2 = func('-(x + y**2 + z**3 - 2 - 3*sqrt(2))',['x','y','z','t','w'])
+        f3 = func('y - z**2 + t + 2 - 2*sqrt(2)',['x','y','z','t','w'])
+        f4 = func('-(y - z**2 + t + 2 - 2*sqrt(2))',['x','y','z','t','w'])
+        f5 = func('x*w - 2',['x','y','z','t','w'])
+        f6 = func('-x*w + 2',['x','y','z','t','w'])
+        point1 = [-1, 2, 1, -2, -2]
+        point2 = [1,1,1,1,1]
+        # result=  [-1.27305146  2.41035329  1.19485979 -0.15423634 -1.57102832]
+        method = Linearization(point2, f0, f1, f2, f3, f4, f5, f6)
         method.launch()
         print('\n result: ',method.points[-1])
         print(' #iterations: ', len(method.points))
